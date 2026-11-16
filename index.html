@@ -71,8 +71,7 @@ body {
     z-index: 999999;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* backdrop-filter removed: the backdrop is 95% black, the blur was invisible and cost a full-screen composite */
     border: none;
 }
 
@@ -489,13 +488,12 @@ body {
     gap: 2px;
     padding: 4px;
     pointer-events: none;
-    backdrop-filter: blur(5px);
 }
 
 .desktop-large-mode .d-folder-grid { width: 70px; height: 70px; padding: 6px; gap: 4px; }
 .d-folder-grid img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
 
-#drag-proxy { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.8; display: none; width: 50px; height: 50px; }
+#drag-proxy { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; opacity: 0.8; display: none; width: 50px; height: 50px; will-change: transform; }
 #drag-proxy img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
 .hidden-badge { position: absolute; top: -5px; right: -5px; background: #fff; color: #000; font-weight: bold; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; align-items: center; justify-content: center; z-index: 2; }
 
@@ -540,7 +538,6 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.95);
-    backdrop-filter: blur(20px);
     z-index: var(--z-modal);
     display: none;
     opacity: 0;
@@ -574,6 +571,10 @@ body {
 
 .window.active { opacity: 1; pointer-events: auto; transform: scale(1); z-index: var(--z-windows); }
 .window.minimized { transform: translateY(100%) scale(0.5); opacity: 0; pointer-events: none; }
+/* A window completely behind the opaque top window is never visible: skip its rendering work. */
+.win-covered { content-visibility: hidden; }
+/* A minimized window is fully off-screen: stop its app from rendering too. */
+.window.minimized iframe { display: none; }
 .win-header {
     position: absolute;
     top: 0;
@@ -889,7 +890,7 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 </section>
 
 <main id="lock-screen" onclick="unlockSystem()" role="presentation">
-  <video id="lock-video" autoplay loop muted playsinline aria-hidden="true"></video>
+  <video id="lock-video" loop muted playsinline aria-hidden="true"></video>
   <img id="lock-img" class="media__fallback" alt="Lockscreen Background">
   
  <article id="lock-ui">
@@ -1382,7 +1383,7 @@ if(!sysConfig.cloak) sysConfig.cloak = 'none';
 window.updateSysSetting = function(key, value) {
     sysConfig[key] = value;
     localStorage.setItem('cine_sys_config', JSON.stringify(sysConfig));
-    if(key === 'optBg') applySystemSettings();
+    if(key === 'optBg') syncBgPlayback();
     if(key === 'wpLoop') updateWallpaperLoop();
 };
 
@@ -1400,6 +1401,7 @@ window.updateCloak = function(key) {
     applyCloak();
 };
 
+var _cloakSig = '';
 function applyCloak() {
     var k = sysConfig.cloak || 'none';
     var sel = cloaks[k];
@@ -1416,8 +1418,12 @@ function applyCloak() {
     } else {
         document.title = "LunaarOS";
     }
+    _cloakSig = k + '|' + document.title;
 }
-setInterval(applyCloak, 2000);
+setInterval(function() {
+    if((sysConfig.cloak || 'none') + '|' + document.title === _cloakSig) return;
+    applyCloak();
+}, 2000);
 
 var isDesktopActive = false;
 var bootActive = true;
@@ -1499,7 +1505,35 @@ function renderUI() {
     dock.innerHTML = dHTML;
     pGrid.innerHTML = pHTML;
     populateDrawer();
+    _dockSig = dockSig();
 }
+
+function dockSig() {
+    let ids = [];
+    for(let id in APPS) if(APPS[id].pinned) ids.push(id);
+    let opened = document.querySelectorAll('#windows-layer .window');
+    for(let i = 0; i < opened.length; i++) {
+        let oid = opened[i].id.replace('win-', '');
+        if(APPS[oid] && !APPS[oid].pinned) ids.push(oid);
+    }
+    return ids.join(',');
+}
+
+function syncDockState() {
+    let items = document.querySelectorAll('#dock-container .dock-item[data-id]');
+    for(let i = 0; i < items.length; i++) {
+        let id = items[i].getAttribute('data-id');
+        let w = document.getElementById('win-' + id);
+        let cls = 'dock-item';
+        if(w) {
+            cls += ' is-open';
+            if(w.classList.contains('minimized')) cls += ' is-min';
+            else if(activeWindowId === id) cls += ' is-active';
+        }
+        if(items[i].className !== cls) items[i].className = cls;
+    }
+}
+var _dockSig = null;
 
 function openDockCtx(e, id) {
     e.preventDefault(); e.stopPropagation();
@@ -1644,10 +1678,7 @@ window.unlockSystem = function() {
         isDesktopActive = true;
         document.getElementById('lock-video').pause();
         
-        if(!sysConfig.optBg) {
-            let bV = document.getElementById('bg-video');
-            if(bV.style.display !== 'none') bV.play().catch(function(e){});
-        }
+        syncBgPlayback();
         if(!welcomeShown) {
             showNotification("Welcome To LunaarOS V2", "Checkout Settings for FAQ!");
             welcomeShown = true;
@@ -1669,7 +1700,7 @@ function applyMediaToElements(url, vidEl, imgEl, isBg) {
         vidEl.style.display = 'block';
         vidEl.src = url;
         vidEl.load();
-        if(isBg && isDesktopActive && !sysConfig.optBg) vidEl.play().catch(function(e){});
+        if(isBg) syncBgPlayback();
         if(!isBg && document.getElementById('lock-screen').classList.contains('active')) vidEl.play().catch(function(e){});
     }
 }
@@ -1701,13 +1732,15 @@ function updateWallpaperLoop() {
     let lV = document.getElementById('lock-video');
     if(bV) bV.loop = sysConfig.wpLoop;
     if(lV) lV.loop = sysConfig.wpLoop;
-    if(!sysConfig.optBg && isDesktopActive && bV && bV.paused && bV.style.display !== 'none') {
-        bV.play().catch(function(e){});
-    }
+    syncBgPlayback();
 }
 
+var _clockSig = '';
 function updateClock() {
     let n = new Date();
+    let cSig = n.getHours() + ':' + n.getMinutes() + ':' + n.getDate() + ':' + n.getDay();
+    if(cSig === _clockSig) return;
+    _clockSig = cSig;
     let dArr = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
     let mArr = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
     
@@ -1759,8 +1792,12 @@ window.openUpdateLog = function() {
     else if(u) u.style.display = 'flex';
 };
 
+var _sbSig = '';
 function updateSidebarData() {
     try {
+        let rsig = (localStorage.getItem('ps_purchased') || '') + '|' + (localStorage.getItem('cinify_cache') || '');
+        if(rsig === _sbSig) return;
+        _sbSig = rsig;
         let ps = JSON.parse(localStorage.getItem('ps_purchased'));
         if(ps && ps.length > 0) document.getElementById('last-game-name').innerText = "PS5 Library Ready";
         let sp = JSON.parse(localStorage.getItem('cinify_cache'));
@@ -1954,6 +1991,33 @@ function openWindow(id) {
 }
 
 
+var bgCovered = false;
+
+function updateWinStack() {
+    let ws = document.querySelectorAll('#windows-layer .window'), topEl = null, topZ = -1;
+    for(let i = 0; i < ws.length; i++) {
+        if(ws[i].classList.contains('minimized')) continue;
+        let z = parseInt(ws[i].style.zIndex, 10) || 0;
+        if(z > topZ) { topZ = z; topEl = ws[i]; }
+    }
+    bgCovered = !!topEl;
+    for(let i = 0; i < ws.length; i++) {
+        let cov = ws[i] !== topEl && !ws[i].classList.contains('minimized');
+        if(cov !== ws[i].classList.contains('win-covered')) ws[i].classList.toggle('win-covered', cov);
+    }
+    syncBgPlayback();
+}
+
+function syncBgPlayback() {
+    let bv = document.getElementById('bg-video');
+    if(!bv) return;
+    if(sysConfig.optBg || !isDesktopActive || bgCovered) {
+        if(!bv.paused) bv.pause();
+    } else if(bv.paused && bv.style.display !== 'none' && bv.getAttribute('src')) {
+        bv.play().catch(function(e){});
+    }
+}
+
 var WIN_META = {}, _winSig = '', _restoring = true, _winT = null;
 function syncWindows() {
     let ws = document.querySelectorAll('#windows-layer .window'), st = [], ids = {};
@@ -1964,10 +2028,12 @@ function syncWindows() {
         if(!WIN_META[id]) WIN_META[id] = Date.now();
     }
     for(let k in WIN_META) if(!ids[k]) delete WIN_META[k];
+    updateWinStack();
     let sig = JSON.stringify(st) + '|' + activeWindowId;
     if(sig === _winSig) return;
     _winSig = sig;
-    renderUI();
+    if(dockSig() !== _dockSig) renderUI();
+    else syncDockState();
     if(!_restoring) {
         try {
             let keep = st.filter(function(s){ return String(s.id).indexOf('game-') !== 0; });
@@ -2022,6 +2088,7 @@ function minimizeWindow(id) {
 function startImmersiveMode(win) {
     document.getElementById('dock-container').classList.add('dock-hidden');
     win.classList.remove('header-visible');
+    updateWinStack();
 }
 
 function endImmersiveMode() {
@@ -2029,12 +2096,13 @@ function endImmersiveMode() {
     if(aw.length === 0) {
         document.getElementById('dock-container').classList.remove('dock-hidden');
         activeWindowId = null;
-    } else {
-        let t = aw[aw.length - 1];
-        activeWindowId = t.id.replace('win-', '');
-        t.style.zIndex = ++highestZ;
-        startImmersiveMode(t);
+        updateWinStack();
+        return;
     }
+    let t = aw[aw.length - 1];
+    activeWindowId = t.id.replace('win-', '');
+    t.style.zIndex = ++highestZ;
+    startImmersiveMode(t);
 }
 
 var dockTimer;
@@ -2059,14 +2127,13 @@ document.getElementById('top-trigger').addEventListener('mouseenter', function()
 });
 
 document.addEventListener('mouseover', function(e) {
+    if(!activeWindowId) return;
+    let w = document.getElementById('win-' + activeWindowId);
+    if(!w) return;
     if(e.target.closest('.win-header')) {
-        if(activeWindowId) {
-            let w = document.getElementById('win-' + activeWindowId);
-            if(w) w.classList.add('header-visible');
-        }
-    } else if(activeWindowId && !e.target.closest('#top-trigger')) {
-        let w = document.getElementById('win-' + activeWindowId);
-        if(w) w.classList.remove('header-visible');
+        if(!w.classList.contains('header-visible')) w.classList.add('header-visible');
+    } else if(!e.target.closest('#top-trigger') && w.classList.contains('header-visible')) {
+        w.classList.remove('header-visible');
     }
 });
 
@@ -2282,8 +2349,7 @@ var DragSystem = {
             if(this.sourceType === 'desktop' || this.sourceType === 'drawer' || this.sourceType === 'dock') {
                 if(this.sourceType === 'drawer') toggleAppDrawer();
                 this.proxy.style.display = 'block';
-                this.proxy.style.left = (e.clientX - 25) + 'px';
-                this.proxy.style.top = (e.clientY - 25) + 'px';
+                this.proxy.style.transform = 'translate(' + (e.clientX - 25) + 'px,' + (e.clientY - 25) + 'px)';
                 
                 if(this.sourceType === 'drawer' || this.sourceType === 'dock') {
                     if(APPS[this.appId]) this.pImg.src = APPS[this.appId].icon;
@@ -2365,6 +2431,7 @@ window.toggleDesktopSize = function(l) {
 };
 
 var unlockedWallpapers = JSON.parse(localStorage.getItem('cine_unlocked_wp')) || ['default'];
+var _wpSig = '';
 window.wpMode = 'both';
 
 function setWallpaper(k, noti=false) {
@@ -2405,6 +2472,10 @@ function openWallpaperMenu() {
     else m.style.display = 'flex';
     m.classList.add('open');
     
+    let wsig = unlockedWallpapers.length + ':' + Object.keys(wallpaperRegistry).length;
+    if(wsig === _wpSig) return;
+    _wpSig = wsig;
+    
     gu.innerHTML = '';
     gl.innerHTML = '';
     
@@ -2417,7 +2488,7 @@ function openWallpaperMenu() {
         if(ul) {
             let mHtml = "";
             if(isImgUrl(d.url)) mHtml = '<img src="' + d.url + '" alt="wp">';
-            else mHtml = '<video src="' + d.url + '" preload="auto" playsinline muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>';
+            else mHtml = '<video src="' + d.url + '" preload="metadata" playsinline muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>';
             
             c.innerHTML = mHtml + '<div class="wp-info">' + d.name + '</div>';
             c.setAttribute('data-key', k);
@@ -2483,22 +2554,24 @@ if(cvsSnow) {
     var flakes = [];
     for(var f=0; f<30; f++) flakes.push({x: Math.random()*sW, y: Math.random()*sH, r: Math.random()*2, s: Math.random()+0.5});
     
-    function drawSnow() {
-        if(isDesktopActive) {
-            ctxSnow.clearRect(0, 0, sW, sH);
-            ctxSnow.fillStyle = "rgba(255,255,255,0.3)";
-            for(let i=0; i<flakes.length; i++) {
-                let fl = flakes[i];
-                ctxSnow.beginPath();
-                ctxSnow.arc(fl.x, fl.y, fl.r, 0, Math.PI * 2);
-                ctxSnow.fill();
-                fl.y += fl.s;
-                if(fl.y > sH) fl.y = 0;
-            }
-        }
+    var sLast = 0;
+    function drawSnow(t) {
         requestAnimationFrame(drawSnow);
+        if(!isDesktopActive || document.hidden || bgCovered) return;
+        if(t - sLast < 33) return;
+        sLast = t || 0;
+        ctxSnow.clearRect(0, 0, sW, sH);
+        ctxSnow.fillStyle = "rgba(255,255,255,0.3)";
+        for(let i=0; i<flakes.length; i++) {
+            let fl = flakes[i];
+            ctxSnow.beginPath();
+            ctxSnow.arc(fl.x, fl.y, fl.r, 0, Math.PI * 2);
+            ctxSnow.fill();
+            fl.y += fl.s;
+            if(fl.y > sH) fl.y = 0;
+        }
     }
-    drawSnow();
+    requestAnimationFrame(drawSnow);
 }
 
 var MODES = ['FAST', 'THINKING', 'LIVE'];
@@ -2627,6 +2700,7 @@ if(cNoti) {
 }
 
 setInterval(function() {
+    if(document.hidden) return;
     let fnd = null;
     let md = document.querySelectorAll('audio, video');
     for(let i=0; i<md.length; i++) {
@@ -2663,7 +2737,7 @@ setInterval(function() {
             if(tt) tt.textContent = fmtT(aMedia.duration);
         }
     }
-}, 1000);
+}, 2000);
 
 function setupM() {
     if(!aMedia) return;
@@ -2712,14 +2786,18 @@ function fmtT(s) {
     return m + ":" + se.toString().padStart(2, '0');
 }
 
+var _fvCtx = null, _fvW = 0;
 function drawFV() {
     requestAnimationFrame(drawFV);
+    if(document.hidden || !cNoti || !aMedia) return;
+    if(!cNoti.classList.contains('active') || cNoti.classList.contains('minimized')) return;
     let cv = document.getElementById('visualizer');
     if(!cv) return;
-    let cx = cv.getContext('2d');
+    if(!_fvCtx) _fvCtx = cv.getContext('2d');
+    let cx = _fvCtx;
     
-    cv.width = cv.parentElement.clientWidth;
-    cv.height = 14;
+    let fvW = cv.parentElement.clientWidth;
+    if(fvW !== _fvW) { cv.width = fvW; cv.height = 14; _fvW = fvW; }
     
     let bL = 32;
     cx.clearRect(0, 0, cv.width, cv.height);
@@ -2742,12 +2820,17 @@ var fFr = 0;
 var fLC = 0;
 
 function chkFps() {
+    if(document.hidden) {
+        fLT = performance.now(); fFr = 0;
+        requestAnimationFrame(chkFps);
+        return;
+    }
     let nw = performance.now();
     fFr++;
     if(nw - fLT >= 1000) {
         let cFps = fFr;
         let fv = document.getElementById('fps-val');
-        if(fv) fv.innerText = cFps;
+        if(fv && fv.textContent != cFps) fv.textContent = cFps;
 
         if(cFps <= 20) {
             fLC++;
