@@ -1,0 +1,6 @@
+/* css/os.css, part 36 of 97 */
+
+.dock-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
+.dock-item img { width: 28px; height: 28px; object-fit: contain; border-radius: 6px; }
+
+.dock-item.is-open::after{content:'';position:absolute;left:50%;bottom:-3px;width:14px;height:3px;border-radius:3px;background:rgba(255,255,255,.55);transform:translateX(-50%);transition:width .25s cubic-bezier(.2,.8,.2,1),background .25s,box-shadow .25s}

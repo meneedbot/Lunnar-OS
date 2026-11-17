@@ -1,0 +1,6 @@
+/* css/os.css, part 70 of 97 */
+.icon-btn { background: none; border: none; color: #888; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 8px; border-radius: 50%; transition: 0.2s; }
+.icon-btn:hover { background: #333; color: #fff; }
+#chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 15.5px; font-family: var(--font-main); padding: 0 5px; outline: none; resize: none; max-height: 120px; line-height: 1.4; font-weight: 600; }
+#chat-input::placeholder { color: #888; font-weight: 500; }
+#mode-toggle { background: #222; color: #888; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; padding: 8px 14px; border-radius: 14px; transition: all 0.2s; border: 1px solid #444; }

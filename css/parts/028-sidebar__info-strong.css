@@ -1,0 +1,9 @@
+/* css/os.css, part 28 of 97 */
+
+.sidebar__info strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

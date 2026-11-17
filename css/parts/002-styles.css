@@ -1,0 +1,11 @@
+/* css/os.css, part 2 of 97 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-drag: none;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}

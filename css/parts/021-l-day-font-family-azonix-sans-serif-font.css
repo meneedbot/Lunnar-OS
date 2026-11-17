@@ -1,0 +1,16 @@
+/* css/os.css, part 21 of 97 */
+
+.l-day { font-family: 'Azonix', sans-serif; font-size: 5rem; letter-spacing: 12px; color: #fff; margin: 0 0 10px 0; text-transform: uppercase; font-weight: normal; }
+.l-date { font-family: var(--font-main); font-size: 1.3rem; letter-spacing: 4px; font-weight: 700; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
+.l-time { font-family: var(--font-main); font-size: 1.1rem; letter-spacing: 3px; font-weight: 700; color: #fff; }
+
+#hud-top {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+    text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}

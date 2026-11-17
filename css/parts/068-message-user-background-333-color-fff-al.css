@@ -1,0 +1,6 @@
+/* css/os.css, part 68 of 97 */
+.message.user { background: #333; color: #fff; align-self: flex-end; border-bottom-right-radius: 6px; border: 1px solid #444; }
+.message.ciri { background: #1a1a1a; color: #fff; align-self: flex-start; position: relative; padding-right: 24px; border-bottom-left-radius: 6px; border: 1px solid #333; }
+details.thought-process { background: #0a0a0a; border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 13.5px; border: 1px solid #222; }
+details.thought-process summary { cursor: pointer; font-weight: 600; color: #888; display: flex; align-items: center; gap: 8px; outline: none; }
+details.thought-process summary:hover { color: #fff; }

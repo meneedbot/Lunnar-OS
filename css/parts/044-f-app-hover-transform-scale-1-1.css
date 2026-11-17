@@ -1,0 +1,7 @@
+/* css/os.css, part 44 of 97 */
+
+.f-app:hover { transform: scale(1.1); }
+.f-app img { width: 38px; height: 38px; border-radius: 8px; }
+.f-app span { font-size: 11px; color: #ccc; max-width: 50px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;}
+
+.desktop-large-mode .desktop-app { width: 90px; height: 90px; }

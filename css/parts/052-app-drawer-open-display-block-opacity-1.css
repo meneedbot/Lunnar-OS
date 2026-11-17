@@ -1,0 +1,6 @@
+/* css/os.css, part 52 of 97 */
+
+#app-drawer.open { display: block; opacity: 1; }
+.drawer-search-wrap { max-width: 600px; margin: 0 auto 40px auto; }
+.drawer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto; }
+.drawer-item { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }

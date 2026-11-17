@@ -1,0 +1,10 @@
+/* css/os.css, part 27 of 97 */
+
+.sidebar__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,0 +1,6 @@
+/* css/os.css, part 48 of 97 */
+
+.os-menu.open { display: flex; opacity: 1; transform: translateX(-50%) translateY(0); }
+.start-search-bar, .drawer-search-wrap { width: 100%; padding: 12px 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; color: white; font-family: var(--font-main); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.start-search-bar input, .drawer-search-input { background: transparent; border: none; color: white; width: 100%; outline: none; }
+.start-search-bar input::placeholder, .drawer-search-input::placeholder { color: #666; }

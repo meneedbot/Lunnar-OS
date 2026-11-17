@@ -1,0 +1,6 @@
+/* css/os.css, part 32 of 97 */
+
+.sidebar__card:hover .play-overlay {
+    opacity: 1;
+    transform: scale(1.2);
+}

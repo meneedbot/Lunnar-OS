@@ -1,0 +1,6 @@
+/* css/os.css, part 66 of 97 */
+.status-icon svg { width: 14px; height: 14px; }
+.secure { color: #fff; } .secure-svg { stroke: #fff; }
+.unstable { color: #888; } .unstable-svg { stroke: #888; }
+#chat-history { width: 100%; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; overflow-x: hidden; flex-grow: 1; padding: 20px 10px; }
+#chat-history::-webkit-scrollbar { width: 4px; }

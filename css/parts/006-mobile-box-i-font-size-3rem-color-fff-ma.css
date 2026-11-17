@@ -1,0 +1,10 @@
+/* css/os.css, part 6 of 97 */
+
+.mobile-box i { font-size: 3rem; color: #fff; margin-bottom: 15px; }
+.mobile-box h2 { font-family: var(--font-header); font-size: 1.2rem; color: #fff; margin-bottom: 10px; }
+.mobile-box p { color: #888; font-size: 1rem; font-weight: 600; }
+
+#boot-layer {
+    position: fixed; inset: 0; background: #000; z-index: var(--z-boot);
+    display: none; transition: opacity 0.6s ease;
+}

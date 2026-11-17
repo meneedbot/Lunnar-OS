@@ -1,0 +1,18 @@
+/* css/os.css, part 37 of 97 */
+.dock-item.is-active::after{width:24px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
+.dock-item.is-min::after{width:6px;background:rgba(255,255,255,.35)}
+.dock-sep { width: 1px; height: 24px; background: #555; margin: 0 4px; }
+
+.desktop-app {
+    position: absolute;
+    width: 80px;
+    height: 95px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: var(--z-desktop);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                width 0.3s ease, height 0.3s ease, 
+                background 0.3s ease, box-shadow 0.3s ease;
+}

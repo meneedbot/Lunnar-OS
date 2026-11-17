@@ -1,0 +1,13 @@
+/* css/os.css, part 3 of 97 */
+
+::selection { background: #444; color: #fff; }
+::-moz-selection { background: #444; color: #fff; }
+
+body {
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: var(--font-main);
+    color: white;
+}
