@@ -1,16 +1,15 @@
 # Lunnar-OS
 
-A browser desktop environment ("LunaarOS V2") plus a small arcade game.
+A browser desktop environment ("LunaarOS V2").
 
 ## Live
 
 | What | URL |
 | --- | --- |
 | LunaarOS | https://raw.githack.com/meneedbot/Lunnar-OS/main/index.html |
-| Neon Drift (arcade) | https://raw.githack.com/meneedbot/Lunnar-OS/main/arcade/index.html |
 
-These serve straight from the `main` branch, so they are current about a minute
-after a push and need no setup.
+It serves straight from the `main` branch, so it is current about a minute
+after a push and needs no setup.
 
 GitHub Pages is the automatic deployment target. It needs switching on once:
 
@@ -18,8 +17,7 @@ GitHub Pages is the automatic deployment target. It needs switching on once:
 2. **Build and deployment** > **Source**: `GitHub Actions`
 
 After that every push to `main` deploys by itself to
-https://meneedbot.github.io/Lunnar-OS/ and the arcade page to
-https://meneedbot.github.io/Lunnar-OS/arcade/ . Until then the deploy job reports
+https://meneedbot.github.io/Lunnar-OS/ . Until then the deploy job reports
 a notice ("GitHub Pages is off") instead of failing, because GitHub's built-in
 token is not allowed to create the Pages site.
 
@@ -32,6 +30,5 @@ token is not allowed to create the Pages site.
 - `js/game-fix.js` - loads games/apps into iframes with CDN fallbacks.
 - `js/touch.js` - touch detection and the mobile layout.
 - `js/data.js` - the bundled app HTML and the base64 wallpapers (large).
-- `arcade/` - Neon Drift: `index.html`, `style.css`, `game.js`.
 - `tools/split.mjs` - splits a single-file build back into the files above.
 - `.github/workflows/` - `split.yml` regenerates the split, `pages.yml` deploys.
