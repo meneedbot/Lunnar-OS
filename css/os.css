@@ -111,6 +111,8 @@ body {
     margin-top: 20px; font-size: 0.8rem; color: #555;
 }
 
+.boot-touch-skip { display: none; }
+
 #boot-btn {
     padding: 15px 50px;
     background: transparent;

@@ -28,6 +28,14 @@
     'body.touch-mode .desktop-app{width:88px;height:100px}',
     '#touch-dock-handle{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:150px;height:30px;padding:0;border:0;background:transparent;z-index:2600;display:flex;align-items:flex-end;justify-content:center;cursor:pointer}',
     '#touch-dock-handle span{display:block;width:64px;height:5px;border-radius:3px;background:rgba(255,255,255,.35);margin-bottom:6px}',
+    'body.touch-mode .boot-logo{font-size:2rem;letter-spacing:5px}',
+    'body.touch-mode .boot-sub{font-size:1rem;letter-spacing:2px;margin-bottom:34px}',
+    'body.touch-mode #boot-btn{padding:15px 34px}',
+    'body.touch-mode .boot-touch-skip{display:block;margin-top:22px;font-size:.85rem;color:#888;letter-spacing:1px;text-decoration:underline;cursor:pointer;padding:12px}',
+    /* the login panel: above the lock clock, never under the on-screen keyboard, and scrollable on short screens */
+    '#lnr-login{max-height:calc(100dvh - 90px);overflow-y:auto}',
+    '#lnr-login input{font-size:16px!important}',
+    '#lnr-login .lnr-skip{color:#777;text-align:center;cursor:pointer;font-size:12px;padding:6px}',
     '@media (max-width:720px){',
     'body.touch-mode #right-sidebar{display:none}',
     'body.touch-mode .os-menu{width:calc(100vw - 20px);height:min(600px,82vh);padding:18px}',
@@ -35,6 +43,7 @@
     'body.touch-mode .l-day{font-size:2.6rem;letter-spacing:6px}',
     'body.touch-mode .hud-day{font-size:2rem;letter-spacing:6px}',
     'body.touch-mode .wp-grid{grid-template-columns:repeat(2,1fr)}',
+    '#lnr-login{width:min(300px,calc(100vw - 28px))!important;bottom:auto!important;top:50%!important;transform:translate(-50%,-50%)!important}',
     '}'
   ].join('\n');
 
@@ -178,6 +187,43 @@
   window.addEventListener('resize', fitTiles);
   window.addEventListener('orientationchange', function () {
     setTimeout(fitTiles, 250);
+  });
+
+  // The boot video can only be skipped with the Enter key, which a phone does not have.
+  var skipEl = document.querySelector('.boot-touch-skip');
+  if (skipEl) {
+    skipEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      if (typeof skipBootSequence === 'function') skipBootSequence();
+    });
+  }
+
+  // accounts.js replaces unlockSystem with a login panel that had no way out,
+  // leaving the desktop unreachable without an account. Give it a skip.
+  window.addEventListener('load', function () {
+    var box = document.getElementById('lnr-login');
+    if (!box || box.querySelector('.lnr-skip')) return;
+    box.style.overflowY = 'auto';
+    box.style.maxHeight = 'calc(100dvh - 90px)';
+    var skip = document.createElement('a');
+    skip.className = 'lnr-skip';
+    skip.textContent = 'Skip login — use without an account';
+    skip.addEventListener('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      box.style.display = 'none';
+      if (typeof isDesktopActive !== 'undefined') {
+        // unlockSystem is the accounts.js gate; step past it deliberately.
+        isDesktopActive = true;
+        var scr = document.getElementById('lock-screen');
+        if (scr) { scr.classList.add('slide-up'); setTimeout(function () { scr.classList.remove('active'); }, 600); }
+        var lv = document.getElementById('lock-video');
+        if (lv) lv.pause();
+        if (typeof syncBgPlayback === 'function') syncBgPlayback();
+      }
+    });
+    box.appendChild(skip);
   });
 
   if (document.readyState === 'loading') {
