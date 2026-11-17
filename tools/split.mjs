@@ -57,28 +57,36 @@ const blocks = [];
 let i = 0;
 
 while (i < lines.length) {
-  const line = lines[i];
+  const t = lines[i].trim();
 
-  if (line === '<style>' || line.startsWith('<style ')) {
-    let j = i;
-    while (j < lines.length && !lines[j].startsWith('</style>')) j++;
+  if (t === '<style>') {
+    let j = i + 1;
+    while (j < lines.length && lines[j].trim() !== '</style>') j++;
     if (j >= lines.length) throw new Error('unterminated <style> at line ' + (i + 1));
-    blocks.push({ kind: 'style', start: i, end: j });
+    blocks.push({ kind: 'style', start: i, end: j, id: null });
     i = j + 1;
     continue;
   }
 
-  if (line === '<script>' || (line.startsWith('<script ') && !/\ssrc=/.test(line))) {
-    let j = i;
-    while (j < lines.length && !lines[j].startsWith('</script>')) j++;
+  if (t === '<script>' || (t.indexOf('<script') === 0 && !/\ssrc=/.test(t) && t.indexOf('type="application/json"') === -1)) {
+    let j = i + 1;
+    while (j < lines.length && lines[j].trim() !== '</script>') j++;
     if (j >= lines.length) throw new Error('unterminated <script> at line ' + (i + 1));
-    const idMatch = /id="([^"]+)"/.exec(line);
+    const idMatch = /id="([^"]+)"/.exec(t);
     blocks.push({ kind: 'script', start: i, end: j, id: idMatch ? idMatch[1] : null });
     i = j + 1;
     continue;
   }
 
   i++;
+}
+
+console.log('Blocks found: ' + blocks.map(function (b) {
+  return b.kind + (b.id ? '#' + b.id : '') + '@' + (b.start + 1);
+}).join(', '));
+
+if (!blocks.some(function (b) { return b.kind === 'style'; })) {
+  throw new Error('no <style> block found - aborting, nothing written');
 }
 
 if (!blocks.length) {
