@@ -1,14 +1,16 @@
 // Splits index.html into css/, js/ and the two data payloads, in place.
 //
 // The markup, the CSS and every script block are ordinary text, so they are cut
-// out by line. The two <script type="application/json"> payloads (the bundled
-// apps and the base64 wallpapers) are 4.6 MB of text, so they are matched with
-// a regex over the raw source and moved into js/data.js as plain globals - the
-// OS keeps reading them synchronously, so nothing about boot order changes.
+// out by line range and each range is replaced by a single tag. The two
+// <script type="application/json"> payloads (the bundled apps and the base64
+// wallpapers) are 4.6 MB of text, so they are matched with a regex over the raw
+// source and moved into js/data.js as plain globals - the OS keeps reading them
+// synchronously, so nothing about boot order changes.
 //
-// Idempotent: once the split has happened there is nothing to match and a
-// second run exits without touching anything.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+// Safe to run repeatedly, and also repairs a half-split index.html (one that
+// still holds the extracted CSS/JS inline next to the new tags): with the data
+// payload already in js/data.js it simply removes the leftover ranges.
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 
 const FILE = 'index.html';
 let src = readFileSync(FILE, 'utf8');
@@ -18,39 +20,40 @@ const MEDIA_RE = /<script id="media-data" type="application\/json">([\s\S]*?)<\/
 
 const appMatch = APP_RE.exec(src);
 const mediaMatch = MEDIA_RE.exec(src);
+const hadData = !!appMatch;
 
-if (!appMatch && !mediaMatch) {
-  console.log(src.indexOf('js/core.js') !== -1
-    ? 'Already split - nothing to do.'
-    : 'Nothing to split - index.html has no inline blocks left.');
-  process.exit(0);
-}
-if (!appMatch || !mediaMatch) {
+if (!!appMatch !== !!mediaMatch) {
   throw new Error('only one of the two data blocks was found - aborting, nothing written');
 }
 
-const appJson = appMatch[1].trim();
-const mediaJson = mediaMatch[1].trim();
+if (appMatch) {
+  const appJson = appMatch[1].trim();
+  const mediaJson = mediaMatch[1].trim();
 
-if (appJson[0] !== '{' || mediaJson[0] !== '{') {
-  throw new Error('the embedded data is not a JSON object - aborting, nothing written');
-}
-if (mediaJson.length < 3000000) {
-  throw new Error('the media payload looks truncated (' + mediaJson.length + ' chars) - aborting, nothing written');
-}
-if (appJson.length < 100000) {
-  throw new Error('the app payload looks truncated (' + appJson.length + ' chars) - aborting, nothing written');
-}
+  if (appJson[0] !== '{' || mediaJson[0] !== '{') {
+    throw new Error('the embedded data is not a JSON object - aborting, nothing written');
+  }
+  if (mediaJson.length < 3000000) {
+    throw new Error('the media payload looks truncated (' + mediaJson.length + ' chars) - aborting, nothing written');
+  }
+  if (appJson.length < 100000) {
+    throw new Error('the app payload looks truncated (' + appJson.length + ' chars) - aborting, nothing written');
+  }
 
-mkdirSync('js', { recursive: true });
-writeFileSync('js/data.js',
-  '// Extracted from index.html by tools/split.mjs.\n' +
-  '// Loaded before js/core.js: the OS reads both globals synchronously.\n' +
-  'window.APP_HTML = ' + appJson + ';\n\n' +
-  'window.MEDIA_B64 = ' + mediaJson + ';\n');
-console.log('Wrote js/data.js (' + (appJson.length + mediaJson.length) + ' chars of payload).');
+  mkdirSync('js', { recursive: true });
+  writeFileSync('js/data.js',
+    '// Extracted from index.html by tools/split.mjs.\n' +
+    '// Loaded before js/core.js: the OS reads both globals synchronously.\n' +
+    'window.APP_HTML = ' + appJson + ';\n\n' +
+    'window.MEDIA_B64 = ' + mediaJson + ';\n');
+  console.log('Wrote js/data.js (' + (appJson.length + mediaJson.length) + ' chars of payload).');
 
-src = src.replace(APP_RE, '<script src="js/data.js"></script>').replace(MEDIA_RE, '');
+  src = src.replace(APP_RE, '<script src="js/data.js"></script>').replace(MEDIA_RE, '');
+} else if (!existsSync('js/data.js')) {
+  throw new Error('index.html has no data payload and js/data.js is missing - aborting, nothing written');
+} else {
+  console.log('Data payload already in js/data.js.');
+}
 
 const lines = src.split('\n');
 const blocks = [];
@@ -81,18 +84,14 @@ while (i < lines.length) {
   i++;
 }
 
+if (!blocks.length) {
+  console.log('Already split - index.html has no inline blocks.');
+  process.exit(0);
+}
+
 console.log('Blocks found: ' + blocks.map(function (b) {
   return b.kind + (b.id ? '#' + b.id : '') + '@' + (b.start + 1);
 }).join(', '));
-
-if (!blocks.some(function (b) { return b.kind === 'style'; })) {
-  throw new Error('no <style> block found - aborting, nothing written');
-}
-
-if (!blocks.length) {
-  console.log('No inline <style> or <script> blocks left - nothing to do.');
-  process.exit(0);
-}
 
 const names = {
   'lunaar-game-fix': 'game-fix.js',
@@ -117,7 +116,6 @@ function stripDataParsing(body) {
 }
 
 let dataPatched = 0;
-const replacements = new Map();
 
 for (const block of blocks) {
   let body = lines.slice(block.start + 1, block.end).join('\n');
@@ -125,8 +123,7 @@ for (const block of blocks) {
   if (block.kind === 'style') {
     mkdirSync('css', { recursive: true });
     writeFileSync('css/os.css', body + '\n');
-    replacements.set(block.start, '<link rel="stylesheet" href="css/os.css">');
-    replacements.set(block.end, null);
+    block.tag = '<link rel="stylesheet" href="css/os.css">';
     continue;
   }
 
@@ -144,22 +141,26 @@ for (const block of blocks) {
 
   mkdirSync('js', { recursive: true });
   writeFileSync('js/' + name, body + '\n');
-  replacements.set(block.start, '<script src="js/' + name + '"></script>');
-  replacements.set(block.end, null);
+  block.tag = '<script src="js/' + name + '"></script>';
 }
 
-if (dataPatched !== 1) {
+if (hadData && dataPatched !== 1) {
   throw new Error('expected exactly one script block to read the payloads, patched ' + dataPatched + ' - aborting, index.html untouched');
 }
 
+// Rebuild: each block's whole line range collapses to its tag.
+const byStart = new Map(blocks.map(function (b) { return [b.start, b]; }));
 const out = [];
-for (let n = 0; n < lines.length; n++) {
-  if (replacements.has(n)) {
-    const value = replacements.get(n);
-    if (value !== null) out.push(value);
+let n = 0;
+while (n < lines.length) {
+  const block = byStart.get(n);
+  if (block) {
+    out.push(block.tag);
+    n = block.end + 1;
     continue;
   }
   out.push(lines[n]);
+  n++;
 }
 
 const result = out.join('\n');
@@ -177,14 +178,20 @@ for (const needle of must) {
 }
 for (const needle of ['<script id="apps-data"', '<script id="media-data"']) {
   const at = result.indexOf(needle);
-  if (at !== -1) {
-    throw new Error('data block still inline at offset ' + at + ': ' +
-      JSON.stringify(result.slice(Math.max(0, at - 120), at + 200)) + ' - aborting, index.html untouched');
-  }
+  if (at !== -1) throw new Error('data block still inline at offset ' + at + ' - aborting, index.html untouched');
 }
-if (result.length > 500000) {
-  throw new Error('index.html is still ' + result.length + ' bytes - aborting, index.html untouched');
+
+// Nothing inline may be left behind: the CSS and JS now live in files.
+const leftovers = result.split('\n').filter(function (line) {
+  const t = line.trim();
+  return t === '<style>' || t === '</style>' || t === '</script>' || (t.indexOf('<script') === 0 && !/\ssrc=/.test(t));
+});
+if (leftovers.length) {
+  throw new Error(leftovers.length + ' inline block line(s) survived, first: ' + JSON.stringify(leftovers[0]) + ' - aborting, index.html untouched');
+}
+if (result.length > 200000) {
+  throw new Error('index.html is still ' + result.length + ' bytes for ' + result.split('\n').length + ' lines - aborting, index.html untouched');
 }
 
 writeFileSync(FILE, result);
-console.log('Split ' + blocks.length + ' blocks. index.html is now ' + result.length + ' bytes.');
+console.log('Split ' + blocks.length + ' blocks. index.html is now ' + result.length + ' bytes in ' + result.split('\n').length + ' lines.');
