@@ -1,0 +1,6 @@
+/* css/os.css, part 27 of 188 */
+
+.l-day, .l-date, .l-time {
+    opacity: 0;
+    transform: translateY(30px);
+}

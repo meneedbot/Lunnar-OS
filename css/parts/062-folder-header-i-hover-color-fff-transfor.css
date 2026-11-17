@@ -1,0 +1,10 @@
+/* css/os.css, part 62 of 188 */
+.folder-header i:hover { color: #fff; transform: scale(1.2); }
+
+.folder-grid-expanded {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+}

@@ -1,6 +1,0 @@
-/* css/os.css, part 73 of 97 */
-.hidden-media { display: none; }
-.hidden-input { display: none; }
-
-#restore-btn { position: fixed; bottom: 24px; right: 0; background: #111; border: 1px solid #444; border-right: none; padding: 14px; border-radius: 16px 0 0 16px; color: #fff; cursor: pointer; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1); z-index: 9998; display: flex; align-items: center; justify-content: center; }
-#restore-btn.visible { transform: translateX(0); }

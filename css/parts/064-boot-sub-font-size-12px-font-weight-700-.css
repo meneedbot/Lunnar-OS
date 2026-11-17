@@ -1,6 +1,0 @@
-/* css/os.css, part 64 of 97 */
-.boot-sub { font-size: 12px; font-weight: 700; color: #888; letter-spacing: 3px; margin-top: 16px; opacity: 0; transform: translateY(20px) scale(0.95); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.boot-sub.show { opacity: 1; transform: translateY(0) scale(1); }
-.boot-loader { margin-top: 40px; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 0.6s ease; }
-.spinner { width: 24px; height: 24px; border: 3px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; margin-bottom: 16px; }
-.boot-status { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: 0.5px; }

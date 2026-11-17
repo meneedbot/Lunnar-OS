@@ -1,0 +1,3 @@
+/* css/os.css, part 117 of 188 */
+.unstable { color: #888; } .unstable-svg { stroke: #888; }
+#chat-history { width: 100%; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; overflow-x: hidden; flex-grow: 1; padding: 20px 10px; }

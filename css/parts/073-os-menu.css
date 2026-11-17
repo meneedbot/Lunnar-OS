@@ -1,0 +1,20 @@
+/* css/os.css, part 73 of 188 */
+
+.os-menu {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    width: 550px;
+    height: 600px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 16px;
+    z-index: var(--z-modal);
+    display: none;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    flex-direction: column;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+}

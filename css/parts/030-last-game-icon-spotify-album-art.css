@@ -1,9 +1,0 @@
-/* css/os.css, part 30 of 97 */
-
-#last-game-icon, #spotify-album-art {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}

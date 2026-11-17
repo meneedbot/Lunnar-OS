@@ -1,0 +1,3 @@
+/* css/os.css, part 105 of 188 */
+.ctx-btn { flex: 1; background: #222; border: 1px solid #444; color: #ccc; border-radius: 6px; padding: 8px 0; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+.ctx-btn:hover { background: #fff; color: #000; border-color: #fff; }

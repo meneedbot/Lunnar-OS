@@ -1,6 +1,0 @@
-/* css/os.css, part 86 of 97 */
-
-.wp-grid-container { overflow-y: auto; flex: 1; padding-right: 10px; }
-.wp-grid-container::-webkit-scrollbar { width: 6px; }
-.wp-grid-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-.wp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }

@@ -1,0 +1,3 @@
+/* css/os.css, part 168 of 188 */
+.wp-card.active-wp { border: 2px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+.wp-card video, .wp-card img { width: 100%; height: 100%; object-fit: cover; }

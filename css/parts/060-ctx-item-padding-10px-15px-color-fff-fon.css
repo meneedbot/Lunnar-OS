@@ -1,6 +1,0 @@
-/* css/os.css, part 60 of 97 */
-.ctx-item { padding: 10px 15px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; border-radius: 6px; }
-.ctx-item i { color: #888; font-size: 16px; transition: 0.2s; width: 20px; text-align: center; }
-.ctx-item:hover { background: #222; }
-.ctx-item:hover i { color: #fff; }
-.ctx-separator { height: 1px; background: #333; margin: 6px 0; }

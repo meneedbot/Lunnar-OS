@@ -1,6 +1,0 @@
-/* css/os.css, part 61 of 97 */
-.ctx-row { display: flex; gap: 8px; padding: 0 4px; }
-.ctx-btn { flex: 1; background: #222; border: 1px solid #444; color: #ccc; border-radius: 6px; padding: 8px 0; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-.ctx-btn:hover { background: #fff; color: #000; border-color: #fff; }
-
-#ciri-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: var(--z-ciri); }

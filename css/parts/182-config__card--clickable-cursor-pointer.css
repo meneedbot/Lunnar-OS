@@ -1,0 +1,3 @@
+/* css/os.css, part 182 of 188 */
+.config__card--clickable { cursor: pointer; }
+.config__card--clickable:hover { background: #1a1a1a; border-color: #555; transform: translateX(5px); }

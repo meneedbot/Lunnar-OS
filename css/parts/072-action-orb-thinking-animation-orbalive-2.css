@@ -1,6 +1,0 @@
-/* css/os.css, part 72 of 97 */
-#action-orb.thinking { animation: orbAlive 2s infinite ease-in-out; filter: contrast(1.2) brightness(1.1); }
-@keyframes orbAlive { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.1); } 50% { transform: scale(1.05); box-shadow: 0 0 20px 5px rgba(255,255,255,0.3); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.1); } }
-#img-preview-box { position: absolute; bottom: 85px; left: 10px; background: #1a1a1a; padding: 6px; border-radius: 12px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.8); border: 1px solid #333; }
-#img-preview-box img { height: 44px; border-radius: 8px; }
-#img-preview-box span { color: #fff; font-size: 13px; cursor: pointer; padding-right: 10px; font-weight: 800; }

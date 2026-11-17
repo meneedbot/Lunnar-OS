@@ -1,0 +1,3 @@
+/* css/os.css, part 85 of 188 */
+.drawer-item { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
+.drawer-item:hover { transform: scale(1.1); }

@@ -1,0 +1,12 @@
+/* css/os.css, part 94 of 188 */
+.win-btn {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: transparent;
+}

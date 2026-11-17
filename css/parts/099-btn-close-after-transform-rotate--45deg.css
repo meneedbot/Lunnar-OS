@@ -1,0 +1,3 @@
+/* css/os.css, part 99 of 188 */
+.btn-close::after { transform: rotate(-45deg); }
+.win-body { width: 100%; height: 100%; overflow: hidden; position: relative; background: #000; }

@@ -1,6 +1,0 @@
-/* css/os.css, part 94 of 97 */
-.config__card--clickable { cursor: pointer; }
-.config__card--clickable:hover { background: #1a1a1a; border-color: #555; transform: translateX(5px); }
-.config__info { display: flex; gap: 15px; align-items: center; }
-.config__icon { color: #888; font-size: 1.5rem; width: 30px; text-align: center; }
-.config__text { display: flex; flex-direction: column; }

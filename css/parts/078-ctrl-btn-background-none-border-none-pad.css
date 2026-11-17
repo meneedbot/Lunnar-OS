@@ -1,6 +1,0 @@
-/* css/os.css, part 78 of 97 */
-.ctrl-btn { background: none; border: none; padding: 0; cursor: pointer; display: flex; justify-content: center; align-items: center; color: #888; transition: transform 0.15s ease, color 0.2s; }
-.ctrl-btn:hover { color: #fff; }
-.ctrl-btn:active { transform: scale(0.85); }
-.ctrl-btn svg { width: 20px; height: 20px; fill: currentColor; }
-.play-pause-btn { background: #fff; color: #000; width: 36px; height: 36px; border-radius: 50%; }

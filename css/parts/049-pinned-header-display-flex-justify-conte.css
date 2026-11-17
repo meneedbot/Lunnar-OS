@@ -1,6 +1,0 @@
-/* css/os.css, part 49 of 97 */
-
-.pinned-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.pinned-header h3 { font-size: 15px; color: #fff; font-weight: 600; }
-.pinned-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px; }
-.pinned-item { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; padding: 12px; border-radius: 12px; transition: 0.2s; }

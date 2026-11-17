@@ -1,0 +1,9 @@
+/* css/os.css, part 26 of 188 */
+
+.lock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-shadow: 0 5px 25px rgba(0,0,0,0.9);
+}

@@ -1,0 +1,3 @@
+/* css/os.css, part 106 of 188 */
+
+#ciri-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: var(--z-ciri); }

@@ -1,31 +1,5 @@
-/* css/os.css, part 1 of 97 */
+/* css/os.css, part 1 of 188 */
 @font-face {
     font-family: 'Azonix';
     src: url('https://db.onlinewebfonts.com/t/04e1f7fb2b58d60eb24df50a9807fa36.woff2') format('woff2');
-}
-
-:root {
-    --glass-bg: rgba(20, 20, 20, 0.6);
-    --glass-border: #333;
-    --accent-main: #fff;
-    --font-main: 'Rajdhani', sans-serif;
-    --font-header: 'Azonix', 'Orbitron', sans-serif;
-    --z-bg: 0;
-    --z-snow: 1;
-    --z-desktop: 10;
-    --z-windows: 500;
-    --z-dock: 1000;
-    --z-triggers: 2000;
-    --z-modal: 3000;
-    --z-noti: 8000;
-    --z-lock: 90000;
-    --z-ciri: 95000;
-    --z-boot: 99999;
-    --bg-page: #000;
-    --bg-window: rgba(15, 15, 15, 0.95);
-    --dark-gray: #111;
-    --mid-gray: #222;
-    --user-gray: #333;
-    --text-white: #fff;
-    --text-muted: #888;
 }

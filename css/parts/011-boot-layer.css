@@ -1,0 +1,6 @@
+/* css/os.css, part 11 of 188 */
+
+#boot-layer {
+    position: fixed; inset: 0; background: #000; z-index: var(--z-boot);
+    display: none; transition: opacity 0.6s ease;
+}

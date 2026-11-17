@@ -1,7 +1,0 @@
-/* css/os.css, part 65 of 97 */
-.boot-warning { font-size: 11px; color: #666; max-width: 280px; text-align: center; line-height: 1.5; font-weight: 500; }
-@keyframes typeCiri { from { width: 0; } to { width: 115px; } }
-@keyframes blinkCiri { 50% { border-color: transparent; } }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-#status-pill { background: #1a1a1a; border-radius: 20px; padding: 8px 18px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #333; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 0.5px; margin-bottom: 10px; flex-shrink: 0; text-transform: uppercase; }

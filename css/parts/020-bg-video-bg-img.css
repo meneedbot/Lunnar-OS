@@ -1,0 +1,11 @@
+/* css/os.css, part 20 of 188 */
+
+#bg-video, #bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: var(--z-bg);
+    opacity: 0.9;
+}

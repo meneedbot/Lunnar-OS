@@ -1,0 +1,3 @@
+/* css/os.css, part 130 of 188 */
+#action-orb { width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff 0%, #aaa 20%, #444 60%, #111 100%); box-shadow: 0 8px 20px rgba(0,0,0,0.8), inset -4px -4px 10px rgba(0,0,0,0.9), inset 2px 2px 8px rgba(255,255,255,0.4); transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1); flex-shrink: 0; cursor: pointer; }
+#action-orb:hover { transform: scale(1.08); box-shadow: 0 12px 25px rgba(255,255,255,0.1); }

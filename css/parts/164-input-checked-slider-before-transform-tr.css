@@ -1,0 +1,4 @@
+/* css/os.css, part 164 of 188 */
+input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+
+.wp-grid-container { overflow-y: auto; flex: 1; padding-right: 10px; }

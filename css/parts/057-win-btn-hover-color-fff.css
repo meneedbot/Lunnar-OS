@@ -1,6 +1,0 @@
-/* css/os.css, part 57 of 97 */
-.win-btn:hover { color: #fff; }
-.btn-min { background: #444; border: 1px solid #666; }
-.btn-min:hover { background: #888; transform: scale(1.15); }
-.btn-min::before { content: ''; width: 8px; height: 2px; background: currentColor; border-radius: 2px; }
-.btn-close { background: #555; border: 1px solid #777; }

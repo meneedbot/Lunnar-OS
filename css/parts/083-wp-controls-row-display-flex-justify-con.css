@@ -1,6 +1,0 @@
-/* css/os.css, part 83 of 97 */
-.wp-controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.segmented-control { display: flex; background: #222; border: 1px solid #333; border-radius: 8px; padding: 4px; gap: 4px; border-style: solid; }
-.segmented-control label { flex: 1; text-align: center; cursor: pointer; }
-.segmented-control input[type="radio"] { display: none; }
-.segmented-control span { display: block; padding: 8px 16px; border-radius: 6px; font-family: var(--font-main); font-weight: bold; color: #888; transition: 0.3s; }

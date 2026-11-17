@@ -1,0 +1,3 @@
+/* css/os.css, part 171 of 188 */
+.toast-notification { background: #111; border: 1px solid #333; border-radius: 8px; width: 340px; padding: 15px; color: #fff; box-shadow: 0 8px 25px rgba(0,0,0,0.9); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); pointer-events: auto; cursor: pointer; }
+.toast-notification.show { transform: translateX(0); }

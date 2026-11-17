@@ -1,0 +1,13 @@
+/* css/os.css, part 6 of 188 */
+
+#mobile-warning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+    /* backdrop-filter removed: the backdrop is 95% black, the blur was invisible and cost a full-screen composite */
+    border: none;
+}

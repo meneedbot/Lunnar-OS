@@ -1,0 +1,5 @@
+/* css/os.css, part 30 of 188 */
+
+@keyframes slideUpTxt {
+    to { opacity: 1; transform: translateY(0); }
+}

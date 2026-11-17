@@ -1,0 +1,16 @@
+/* css/os.css, part 57 of 188 */
+
+.d-label {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 2px 5px #000, 0 0 2px #000;
+    width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s;
+}

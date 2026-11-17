@@ -1,6 +1,0 @@
-/* css/os.css, part 91 of 97 */
-.faq-header {
-  display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;
-}
-.faq-header h2 { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }

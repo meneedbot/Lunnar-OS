@@ -1,0 +1,4 @@
+/* css/os.css, part 76 of 188 */
+.start-search-bar input::placeholder, .drawer-search-input::placeholder { color: #666; }
+
+.pinned-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }

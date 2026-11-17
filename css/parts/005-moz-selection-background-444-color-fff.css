@@ -1,0 +1,11 @@
+/* css/os.css, part 5 of 188 */
+::-moz-selection { background: #444; color: #fff; }
+
+body {
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: var(--font-main);
+    color: white;
+}

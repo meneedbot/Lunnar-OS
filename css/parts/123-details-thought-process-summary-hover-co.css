@@ -1,0 +1,3 @@
+/* css/os.css, part 123 of 188 */
+details.thought-process summary:hover { color: #fff; }
+details.thought-process summary::before { content: "🧠"; font-size: 15px; }
