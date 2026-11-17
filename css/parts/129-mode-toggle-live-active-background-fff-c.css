@@ -1,3 +1,0 @@
-/* css/os.css, part 129 of 188 */
-#mode-toggle.live-active { background: #fff; color: #000; border-color: #fff; animation: pulseWhite 2s infinite; }
-@keyframes pulseWhite { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { box-shadow: 0 0 0 8px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }

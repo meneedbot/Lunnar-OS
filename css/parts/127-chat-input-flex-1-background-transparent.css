@@ -1,3 +1,0 @@
-/* css/os.css, part 127 of 188 */
-#chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 15.5px; font-family: var(--font-main); padding: 0 5px; outline: none; resize: none; max-height: 120px; line-height: 1.4; font-weight: 600; }
-#chat-input::placeholder { color: #888; font-weight: 500; }

@@ -1,4 +1,0 @@
-/* css/os.css, part 89 of 188 */
-.window.minimized { transform: translateY(100%) scale(0.5); opacity: 0; pointer-events: none; }
-/* A window completely behind the opaque top window is never visible: skip its rendering work. */
-.win-covered { content-visibility: hidden; }

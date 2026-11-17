@@ -1,3 +1,0 @@
-/* css/os.css, part 53 of 188 */
-.dock-item.is-active::after{width:24px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
-.dock-item.is-min::after{width:6px;background:rgba(255,255,255,.35)}

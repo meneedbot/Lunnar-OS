@@ -1,4 +1,0 @@
-/* css/os.css, part 170 of 188 */
-.close-icon { cursor: pointer; font-size: 1.5rem; color: #fff; }
-
-#toast-container { position: fixed; bottom: 70px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }

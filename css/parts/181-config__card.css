@@ -1,5 +1,0 @@
-/* css/os.css, part 181 of 188 */
-.config__card {
-  background: #111; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-bottom: 12px;
-  display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
-}

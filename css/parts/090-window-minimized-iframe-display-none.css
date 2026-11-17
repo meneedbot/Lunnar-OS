@@ -1,3 +1,0 @@
-/* css/os.css, part 90 of 188 */
-/* A minimized window is fully off-screen: stop its app from rendering too. */
-.window.minimized iframe { display: none; }

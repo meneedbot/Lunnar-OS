@@ -1,3 +1,0 @@
-/* css/os.css, part 98 of 188 */
-.btn-close::before, .btn-close::after { content: ''; position: absolute; width: 8px; height: 2px; background: currentColor; border-radius: 2px; }
-.btn-close::before { transform: rotate(45deg); }

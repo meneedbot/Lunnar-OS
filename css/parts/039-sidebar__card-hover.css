@@ -1,7 +1,0 @@
-/* css/os.css, part 39 of 188 */
-
-.sidebar__card:hover {
-    background: rgba(30, 30, 30, 0.9);
-    border-color: #fff;
-    transform: translateX(-5px) scale(1.02);
-}

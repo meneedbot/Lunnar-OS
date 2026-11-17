@@ -1,3 +1,0 @@
-/* css/os.css, part 109 of 188 */
-#ciri-boot-screen { position: absolute; inset: 0; background: #000; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease, filter 0.8s ease; border-radius: 32px; }
-.boot-ciri { font-size: 42px; font-weight: 800; color: #fff; font-family: monospace; border-right: 3px solid #fff; white-space: nowrap; overflow: hidden; width: 0; letter-spacing: -1px; }

@@ -1,3 +1,0 @@
-/* css/os.css, part 160 of 188 */
-.segmented-control input[type="radio"]:checked + span { background: #fff; color: #000; }
-.loop-toggle-container { display: flex; align-items: center; gap: 10px; background: #222; border: 1px solid #333; padding: 6px 16px; border-radius: 8px; }

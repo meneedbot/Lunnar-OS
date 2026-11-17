@@ -1,3 +1,0 @@
-/* css/os.css, part 167 of 188 */
-.wp-card { background: #000; border: 1px solid #333; border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; aspect-ratio: 16/9; }
-.wp-card:hover { border-color: #fff; transform: translateY(-4px); }

@@ -1,7 +1,0 @@
-/* css/os.css, part 175 of 188 */
-.toast-body { font-family: var(--font-main); font-size: 13px; color: #ccc; line-height: 1.4; }
-
-.faq-box {
-  background: #111; border: 1px solid #333; border-radius: 16px; padding: 30px;
-  width: 500px; max-width: 90%; font-family: var(--font-main); color: #fff;
-}
