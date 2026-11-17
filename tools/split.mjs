@@ -175,8 +175,12 @@ const must = [
 for (const needle of must) {
   if (result.indexOf(needle) === -1) throw new Error('missing "' + needle + '" in the rebuilt index.html - aborting, index.html untouched');
 }
-if (result.indexOf('apps-data') !== -1 || result.indexOf('media-data') !== -1) {
-  throw new Error('a data block is still inline - aborting, index.html untouched');
+for (const needle of ['<script id="apps-data"', '<script id="media-data"']) {
+  const at = result.indexOf(needle);
+  if (at !== -1) {
+    throw new Error('data block still inline at offset ' + at + ': ' +
+      JSON.stringify(result.slice(Math.max(0, at - 120), at + 200)) + ' - aborting, index.html untouched');
+  }
 }
 if (result.length > 500000) {
   throw new Error('index.html is still ' + result.length + ' bytes - aborting, index.html untouched');
