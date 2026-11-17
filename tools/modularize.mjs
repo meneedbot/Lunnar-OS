@@ -25,12 +25,10 @@ const DATA_PARTS = 'js/parts/data';
 
 // Each CSS part holds at least this many lines (and always whole rules), so the
 // split reaches roughly the file count asked for without touching the scripts.
-const CSS_LINES = 5;
+const CSS_LINES = 2;
 
-if (existsSync(MANIFEST) && !process.argv.includes('--force')) {
-  console.log('Already modularized - see ' + MANIFEST + '.');
-  process.exit(0);
-}
+// Bumped when the parts need rebuilding from css/os.css and js/data.js.
+const VERSION = 2;
 
 const written = [];
 
@@ -46,6 +44,34 @@ function slug(text, fallback) {
 function write(rel, body) {
   writeFileSync(rel, body);
   written.push(rel);
+}
+
+// Put index.html back to the unsplit tags so the run can start over.
+function collapse(html) {
+  const lines = html.split('\n');
+  const out = [];
+  let css = false;
+  let data = false;
+
+  for (const line of lines) {
+    const t = line.trim();
+    if (t.indexOf('<link rel="stylesheet" href="css/parts/') === 0) {
+      if (!css) {
+        out.push('<link rel="stylesheet" href="css/os.css">');
+        css = true;
+      }
+      continue;
+    }
+    if (t.indexOf('<script src="js/parts/data/') === 0 && /<\/script>$/.test(t)) {
+      if (!data) {
+        out.push('<script src="js/data.js"></script>');
+        data = true;
+      }
+      continue;
+    }
+    out.push(line);
+  }
+  return out.join('\n');
 }
 
 // ---------- CSS: whole rules only, in their original order ----------
@@ -120,9 +146,23 @@ function splitData(src) {
 }
 
 // ---------- run ----------
+let manifest = null;
+try {
+  manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
+} catch (err) {
+  manifest = null;
+}
+
+const force = process.argv.includes('--force') || (manifest !== null && manifest.version !== VERSION);
+if (manifest && manifest.version === VERSION && !process.argv.includes('--force')) {
+  console.log('Already modularized - see ' + MANIFEST + '.');
+  process.exit(0);
+}
+
 let html = readFileSync(INDEX, 'utf8');
+if (force) html = collapse(html);
 if (html.indexOf('css/parts/') !== -1 || html.indexOf('js/parts/') !== -1) {
-  console.log('index.html already points at the parts - nothing to do.');
+  console.log('index.html already points at other parts - nothing to do.');
   process.exit(0);
 }
 
@@ -180,6 +220,7 @@ if (html.length < 8000) {
 
 writeFileSync(INDEX, html);
 writeFileSync(MANIFEST, JSON.stringify({
+  version: VERSION,
   at: new Date().toISOString(),
   files: written.length,
   css: cssFiles.length,
