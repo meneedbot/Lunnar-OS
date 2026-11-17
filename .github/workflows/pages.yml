@@ -24,12 +24,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # GitHub's built-in token cannot create a Pages site for the repository, so if
+      # Pages has never been switched on, say so once instead of failing the build.
+      - name: Is GitHub Pages enabled?
+        id: pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages")
+          if [ "$code" = "200" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Pages is enabled - deploying."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=GitHub Pages is off::Open this repository's Settings > Pages and set Source to 'GitHub Actions' once. This workflow then deploys on every push."
+            echo "Pages is not enabled for this repository (HTTP $code) - skipping the deploy."
+          fi
+
       - name: Set up Node
+        if: steps.pages.outputs.enabled == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Prepare site
+        if: steps.pages.outputs.enabled == 'true'
         run: |
           # no-op once the repo holds css/ and js/; keeps the published site working
           # even if the split job has not committed its result yet
@@ -38,15 +60,20 @@ jobs:
           tar --exclude=.git --exclude=.github --exclude=tools --exclude=_site -cf - . | tar -xf - -C _site
 
       - name: Configure Pages
+        if: steps.pages.outputs.enabled == 'true'
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload artifact
+        if: steps.pages.outputs.enabled == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
       - name: Deploy
+        if: steps.pages.outputs.enabled == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Report
+        if: steps.pages.outputs.enabled == 'true'
+        run: echo "Live at ${{ steps.deployment.outputs.page_url }}"
