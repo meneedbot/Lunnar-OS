@@ -55,8 +55,8 @@ jobs:
         run: |
           # no-op once the repo holds css/ and js/; keeps the published site working
           # even if the split job has not committed its result yet
+          node tools/collapse.mjs || echo "collapse skipped"
           node tools/split.mjs || echo "split skipped"
-          node tools/modularize.mjs || echo "modularize skipped"
           mkdir -p _site
           tar --exclude=.git --exclude=.github --exclude=tools --exclude=_site -cf - . | tar -xf - -C _site
 

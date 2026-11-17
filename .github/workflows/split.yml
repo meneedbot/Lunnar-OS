@@ -20,10 +20,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Back to the eight files
+        run: node tools/collapse.mjs
+
       - name: Split
-        run: |
-          node tools/split.mjs
-          node tools/modularize.mjs
+        run: node tools/split.mjs
 
       - name: Commit the result
         run: |
