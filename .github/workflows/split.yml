@@ -21,7 +21,9 @@ jobs:
           node-version: 20
 
       - name: Split
-        run: node tools/split.mjs
+        run: |
+          node tools/split.mjs
+          node tools/modularize.mjs
 
       - name: Commit the result
         run: |

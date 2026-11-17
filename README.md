@@ -39,12 +39,24 @@ allowed to create the Pages site.
 
 ## Layout
 
+The source is split into small files, aimed at roughly 200 of them:
+
 - `index.html` - the OS markup: boot and lock screens, desktop, dock, dialogs.
-- `css/os.css` - all of the styling.
-- `js/core.js` - the desktop: windows, dock, wallpapers, clock, media panel.
-- `js/accounts.js` - lock-screen login and the optional shared database.
-- `js/game-fix.js` - loads games/apps into iframes with CDN fallbacks.
-- `js/touch.js` - touch detection and the mobile layout.
-- `js/data.js` - the bundled app HTML and the base64 wallpapers (large).
-- `tools/split.mjs` - splits a single-file build back into the files above.
-- `.github/workflows/` - `split.yml` regenerates the split, `pages.yml` deploys.
+- `css/parts/*.css` - all of the styling, a few rules per file, linked in order.
+- `js/parts/core-*.js` - the desktop, a few statements per file, loaded in order.
+- `js/parts/accounts-*.js` - lock-screen login and the optional shared database.
+- `js/parts/game-fix-*.js` - loads games/apps into iframes with CDN fallbacks.
+- `js/parts/touch-*.js` - touch detection and the mobile layout.
+- `js/parts/data/*.js` - the bundled app HTML and the base64 wallpapers, one
+  file per app and per wallpaper (large).
+
+`tools/split.mjs` turns a single-file build back into `css/os.css` and
+`js/*.js`; `tools/modularize.mjs` then cuts those into the parts above and
+rewrites `index.html`. Both run in CI, and both refuse to write anything unless
+the pieces join back into the file they came from, so a bad split can never reach
+the site. `tools/modularized.json` marks the split as done: once it exists, edit
+the parts, not `css/os.css` or `js/*.js` (`modularize.mjs --force` rebuilds from
+them again, discarding edits to the parts).
+
+Loading hundreds of files instead of seven costs more round trips, which is slower
+on a slow machine, not faster - the browser has to fetch and parse each one.
