@@ -24,10 +24,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Prepare site
         run: |
+          # no-op once the repo holds css/ and js/; keeps the published site working
+          # even if the split job has not committed its result yet
+          node tools/split.mjs || echo "split skipped"
           mkdir -p _site
-          tar --exclude=.git --exclude=.github -cf - . | tar -xf - -C _site
+          tar --exclude=.git --exclude=.github --exclude=tools --exclude=_site -cf - . | tar -xf - -C _site
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
