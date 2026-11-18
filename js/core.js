@@ -620,11 +620,16 @@ function filterDrawer(val) {
 
 function toggleAppDrawer() {
     let d = document.getElementById('app-drawer');
+    if(!d) return;
     if(d.classList.contains('open')) {
         d.classList.remove('open');
+        try { if(d.open && d.close) d.close(); } catch(e) {}
         setTimeout(function(){ d.style.display='none'; }, 300);
     } else {
+        populateDrawer();
         d.style.display = 'block';
+        /* it is a <dialog>: opening it properly also gives it a backdrop and focus */
+        try { if(!d.open && d.showModal) d.showModal(); } catch(e) {}
         setTimeout(function(){ d.classList.add('open'); }, 10);
     }
 }
@@ -913,6 +918,16 @@ document.addEventListener('mouseover', function(e) {
 
 var desktopLayout = JSON.parse(localStorage.getItem('cine_desktop_v2')) || [];
 desktopLayout = desktopLayout.filter(function(it){ if(it.type==='folder'&&it.apps) it.apps=it.apps.filter(function(x){return x!=='youtube'}); return it.id!=='youtube'; });
+/* A fresh phone visit used to open an empty desktop with nothing to tap but the dock. */
+if(isTouchDevice && desktopLayout.length === 0) {
+    desktopLayout = [
+        {type: 'app', id: 'files', x: 24, y: 24},
+        {type: 'app', id: 'term', x: 24, y: 132},
+        {type: 'app', id: 'gemini', x: 24, y: 240},
+        {type: 'app', id: 'settings', x: 124, y: 24},
+        {type: 'app', id: 'calc', x: 124, y: 132}
+    ];
+}
 
 function saveDesktop() {
     localStorage.setItem('cine_desktop_v2', JSON.stringify(desktopLayout));
